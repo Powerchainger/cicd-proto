@@ -15,6 +15,8 @@ jobs:
           echo "action_state=yellow" >> "$GITHUB_ENV"
       - name: "show all available vars"
         run: env
+      - name: "use var out of GITHUB_ENV file"
+        run: echo "$DAY_OF_WEEK"
       - name: "use config value from vars context"
         run: echo "${{vars.TEST_CONFIGURATION}}"
   greeting_job:

@@ -1,0 +1,39 @@
+name: Play with vars and envs
+
+on:
+  workflow_dispatch
+
+env:
+  DAY_OF_WEEK: Monday
+
+jobs:
+  greeting_job:
+    runs-on: ubuntu-latest
+    env:
+      Greeting: Hello
+    steps:
+      - name: "Setup env on step level"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona
+      - name: "Override DAY_OF_WEEK on step level"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona
+          DAY_OF_WEEK: Tuesday
+      - name: "Don't setup env on step level"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+  greeting_job_1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Setup env on step level"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona
+      - name: "Override DAY_OF_WEEK on step level"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona
+          DAY_OF_WEEK: Tuesday
+      - name: "Don't setup env on step level"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"

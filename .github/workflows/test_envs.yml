@@ -7,6 +7,11 @@ env:
   DAY_OF_WEEK: Monday
 
 jobs:
+  display:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "show all available vars"
+        run: env
   greeting_job:
     runs-on: ubuntu-latest
     env:

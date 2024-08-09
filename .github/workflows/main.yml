@@ -1,4 +1,4 @@
-name: test
+name: main
 
 on:
   push:
@@ -8,27 +8,5 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest 
-    
-    env: 
-      SolutionName: SimpleOne.sln
-    
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 6.0.x
-
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-        env:
-          Configuration: Release  
+  build_and_test:
+    uses: ./.github/workflows/dotnet_test.yaml

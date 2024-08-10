@@ -10,8 +10,10 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: name/ap
-      - name: Print meta
-        run: echo "${{ steps.meta.outputs.labels }} ${{ steps.meta.outputs.tags }}"
+          images: powerchainger/cicd-proto
+      - name: Print meta lables
+        run: echo "${{ steps.meta.outputs.labels }}"
+      - name: Print meta tags.
+        run: echo "${{ steps.meta.outputs.tags }}"
     
           

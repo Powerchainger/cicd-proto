@@ -12,7 +12,7 @@ jobs:
         with:
           images: powerchainger/cicd-proto
           tags: |
-             type=raw,value=dep-{{branch}}-{{sha}},suffix=${{github.run_number}}-${{github.run_attempt}}
+             type=raw,value=dep-{{branch}}-{{sha}},suffix=-${{github.run_number}}-${{github.run_attempt}}
       - name: Print meta lables
         run: echo "${{ steps.meta.outputs.labels }}"
       - name: Print meta tags.

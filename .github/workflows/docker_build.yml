@@ -45,7 +45,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{inputs.regestry}}${{inputs.application}}
+          images: ${{inputs.regestry}}/${{inputs.application}}
           tags: |
              type=raw,value=dep-{{branch}}-{{sha}},suffix=-${{github.run_number}}-${{github.run_attempt}}
              

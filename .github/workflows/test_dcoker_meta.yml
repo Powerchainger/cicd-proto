@@ -15,5 +15,7 @@ jobs:
         run: echo "${{ steps.meta.outputs.labels }}"
       - name: Print meta tags.
         run: echo "${{ steps.meta.outputs.tags }}"
+      - name: Print meta version.
+        run: echo "${{ steps.meta.outputs.version }}"
     
           

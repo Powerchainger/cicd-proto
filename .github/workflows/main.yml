@@ -17,4 +17,5 @@ jobs:
     with:
       file: ./DevOps/dockerfile
       context: .
+      push: true
       application: cicd-test

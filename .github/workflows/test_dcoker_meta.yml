@@ -11,6 +11,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: powerchainger/cicd-proto
+          tags: |
+             type=raw,value=dep-{{branch}}-{{sha}}
       - name: Print meta lables
         run: echo "${{ steps.meta.outputs.labels }}"
       - name: Print meta tags.

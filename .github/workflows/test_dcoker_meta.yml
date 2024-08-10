@@ -1,0 +1,17 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    name: Test docker metadata action
+    steps:
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: name/ap
+      - name: Print meta
+        run: echo "${{ steps.meta.outputs.labels }} ${{ steps.meta.outputs.tags }}"
+    
+          

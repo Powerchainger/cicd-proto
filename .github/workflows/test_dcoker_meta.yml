@@ -1,0 +1,23 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    name: Test docker metadata action
+    steps:
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: powerchainger/cicd-proto
+          tags: |
+             type=raw,value=dep-{{branch}}-{{sha}},suffix=-${{github.run_number}}-${{github.run_attempt}}
+      - name: Print meta lables
+        run: echo "${{ steps.meta.outputs.labels }}"
+      - name: Print meta tags.
+        run: echo "${{ steps.meta.outputs.tags }}"
+      - name: Print meta version.
+        run: echo "${{ steps.meta.outputs.version }}"
+    
+          

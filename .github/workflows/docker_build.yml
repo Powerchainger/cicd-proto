@@ -47,7 +47,7 @@ jobs:
         with:
           images: ${{inputs.regestry}}/${{inputs.application}}
           tags: |
-             type=raw,value=dep-{{branch}}-{{sha}},suffix=-${{github.run_number}}-${{github.run_attempt}}
+             type=raw,value={{branch}}-${{github.run_id}}-{{sha}},suffix=-${{github.run_number}}-${{github.run_attempt}}
              
       - name: Print meta lables
         run: echo "${{ steps.meta.outputs.labels }}"

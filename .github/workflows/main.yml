@@ -13,7 +13,7 @@ jobs:
     with: 
       dotnet_version: 6.0.x
   docker_build_and_test:
-    uses: ./.github/workflows/docker_build.yml
+    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with:
       file: ./DevOps/dockerfile
       context: .

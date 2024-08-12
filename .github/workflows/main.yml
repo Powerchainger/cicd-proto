@@ -9,7 +9,7 @@ on:
 
 jobs:
   dotnet_build_and_test:
-    uses: owerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
+    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 
       dotnet_version: 6.0.x
   docker_build_and_test:

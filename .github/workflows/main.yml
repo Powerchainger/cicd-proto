@@ -20,7 +20,8 @@ jobs:
       push: true
       application: cicd-test
   show:
+    name: "show image tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
     runs-on: ubuntu-latest
-    needs: docker_build_and_test
+    needs: [docker_build_and_test, dotnet_build_and_test]
     steps:
       - run: echo ${{ needs.docker_build_and_test.outputs.image_tags }}

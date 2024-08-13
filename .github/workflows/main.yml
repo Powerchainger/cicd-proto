@@ -23,7 +23,7 @@ jobs:
       context: .
       push:  ${{ github.event_name != 'pull_request' }}
       application: cicd-test
-      push_as_latest: ${{env.PUSH_AS_LATEST}}
+      push_as_latest: ${{PUSH_AS_LATEST}}
   show:
     name: "show image tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
     runs-on: ubuntu-latest

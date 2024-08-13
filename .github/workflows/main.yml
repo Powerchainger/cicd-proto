@@ -6,7 +6,11 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-
+  
+env:
+  RELEASE_BRANCH: 'refs/heads/main'
+  PUSH_AS_LATEST: true
+  
 jobs:
   dotnet_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
@@ -19,7 +23,7 @@ jobs:
       context: .
       push:  ${{ github.event_name != 'pull_request' }}
       application: cicd-test
-      push_as_latest: ${{github.ref == format('refs/heads/{0}', 'main')}}
+      push_as_latest: ${{env.PUSH_AS_LATEST}}
   show:
     name: "show image tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
     runs-on: ubuntu-latest

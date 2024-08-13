@@ -25,4 +25,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: [docker_build_and_test, dotnet_build_and_test]
     steps:
-      - run: echo ${{ needs.docker_build_and_test.outputs.image_tags }}
+      - run: echo "${{ needs.docker_build_and_test.outputs.image_tags }}"

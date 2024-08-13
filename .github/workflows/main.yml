@@ -17,9 +17,9 @@ jobs:
     with:
       file: ./DevOps/dockerfile
       context: .
-      push: true
+      push: ${{github.ref == github.event.repository.default_branch}}
       application: cicd-test
-      push_as_latest: true
+      push_as_latest: ${{github.ref == format('refs/heads/{0}', 'main')}}
   show:
     name: "show image tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
     runs-on: ubuntu-latest

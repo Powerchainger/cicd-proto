@@ -1,7 +1,8 @@
 name: Play with vars and envs
 
 on:
-  workflow_dispatch
+  push:
+  workflow_dispatch:
 
 env:
   DAY_OF_WEEK: Monday
@@ -10,6 +11,8 @@ jobs:
   display:
     runs-on: ubuntu-latest
     steps:
+      - name: show the value
+        run: echo "${{github.ref == format('refs/heads/{0}', 'master')}} /n ${{github.ref}}"
       - name: Set the value
         run: |
           echo "action_state=yellow" >> "$GITHUB_ENV"

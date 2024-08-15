@@ -1,2 +1,2 @@
 # cicd-proto
-Test project to check cicd ideas. 
+![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)

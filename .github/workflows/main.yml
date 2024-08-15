@@ -17,13 +17,16 @@ jobs:
     with: 
       dotnet_version: 6.0.x
   docker_build_and_test:
+    strategy:
+      matrix:
+        application: [cicd-test, cicd-testv2]
     uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
     with:
       file: ./DevOps/dockerfile
       context: .
       push:  ${{ github.event_name != 'pull_request' }}
-      application: cicd-test
-      push_as_latest: env.PUSH_AS_LATEST
+      application: ${{matrix.application}}
+      push_as_latest: true
   show:
     name: "show image tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
     runs-on: ubuntu-latest

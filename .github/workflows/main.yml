@@ -19,7 +19,7 @@ jobs:
   docker_build_and_test:
     strategy:
       matrix:
-        application: [cicd-test, cicd-testv2]
+        application: [cicd-test]
     uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
     with:
       file: ./DevOps/dockerfile

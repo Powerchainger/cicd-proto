@@ -53,7 +53,7 @@ jobs:
       with:
         release: 'test-r'
         namespace: ${{ vars.KUBE_CONFIG }}
-        chart: './DevOps/Helm/test'
+        chart: 'DevOps/Helm/test'
         token: '${{ github.token }}'
         values: |
           TestKey:  ${{ vars.KUBE_CONFIG }}

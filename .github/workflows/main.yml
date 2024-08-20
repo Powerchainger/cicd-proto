@@ -59,4 +59,4 @@ jobs:
       uses: azure/setup-helm@v1
 
     - name: Deploy with Helm
-      run: helm upgrade --install my-release ./DevOps/Helm/Test-chart --namespace ${{ vars.KUBE_NAMESPACE }} --set TestKey=${{ vars.TEST_VALUE }}
+      run: helm upgrade --install my-release ./DevOps/Helm/test --namespace ${{ vars.KUBE_NAMESPACE }} --set TestKey=${{ vars.TEST_VALUE }}

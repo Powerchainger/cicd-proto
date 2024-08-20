@@ -56,7 +56,7 @@ jobs:
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
     - name: Install Helm
-      uses: azure/setup-helm@v1
+      uses: azure/setup-helm@v4.2.0
 
     - name: Deploy with Helm
       run: helm upgrade --install my-release ./DevOps/Helm/test --namespace ${{ vars.KUBE_NAMESPACE }} --set TestKey=${{ vars.TEST_VALUE }}

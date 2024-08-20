@@ -46,20 +46,17 @@ jobs:
     runs-on: 'ubuntu-latest'
     environment: ${{ github.event.inputs.environment }}
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: 'Deploy'
-      uses: 'glopezep/helm@v1.8.0'
+    - name: Set up Kubernetes context
+      uses: azure/k8s-set-context@v1
       with:
-        release: 'test-r'
-        namespace: ${{ vars.KUBE_CONFIG }}
-        chart: 'DevOps/Helm/test'
-        token: '${{ github.token }}'
-        values: |
-          TestKey:  ${{ vars.KUBE_CONFIG }}
-        value-files: >-
-          [
-            "values.yaml"
-          ]
-      env:
-        KUBECONFIG_FILE: '${{ secrets.KUBE_CONFIG }}'
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+
+    - name: Deploy with Helm
+      run: helm upgrade --install my-release ./DevOps/Helm/Test-chart --namespace ${{ vars.KUBE_NAMESPACE }} --set TestKey=${{ vars.TEST_VALUE }}

@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - test1
   
 env:
   RELEASE_BRANCH: 'refs/heads/main'

@@ -10,10 +10,9 @@ on:
       environment:
         description: 'Select the environment'
         required: true
-        default: 'production'
         type: choice
         options:
-          - production
+          - another
           - test1
   
 env:

@@ -62,4 +62,4 @@ jobs:
       run: helm upgrade --install my-release ./DevOps/Helm/test --namespace ${{ vars.KUBE_NAMESPACE }} --set TestKey=${{ vars.TEST_VALUE }}
 
     - name: Check release
-      run: helm status my-release --namespace ${{ vars.KUBE_NAMESPACE }}
+      run: helm status my-release --namespace test1

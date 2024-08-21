@@ -33,7 +33,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ SampleApp.image}}
+          image: {{ include "SampleApp.image" .}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: app

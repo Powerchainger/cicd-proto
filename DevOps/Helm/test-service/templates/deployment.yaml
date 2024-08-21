@@ -5,7 +5,7 @@ metadata:
   annotations:
     reloader.stakater.com/auto: "true"
   labels:
-    {{ include "SampleApp.labels" . | indent 4 }}
+    {{- include "SampleApp.labels" . | nindent 4 }}
 spec:
   replicas: {{ include "SampleApp.replicaCount" . }}
   strategy:
@@ -22,7 +22,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "SampleApp.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-      annotations:
+      #annotations:
         # prometheus.io/scrape: "true"
         # prometheus.io/path: "/metrics"
     spec:

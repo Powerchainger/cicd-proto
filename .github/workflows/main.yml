@@ -20,30 +20,30 @@ env:
   PUSH_AS_LATEST: true
   
 jobs:
-  dotnet_build_and_test:
-    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
-    with: 
-      dotnet_version: 6.0.x
-  docker_build_and_test:
-    strategy:
-      matrix:
-        application: [cicd-test]
-    uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
-    with:
-      file: ./DevOps/dockerfile
-      context: .
-      push:  ${{ github.event_name != 'pull_request' }}
-      application: ${{matrix.application}}
-      push_as_latest: true
-  show:
-    name: "show image tags"
-    runs-on: ubuntu-latest
-    needs: [docker_build_and_test, dotnet_build_and_test]
-    steps:
-      - run: echo "${{ needs.docker_build_and_test.outputs.image_tags }}"
+  # dotnet_build_and_test:
+  #   uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
+  #   with: 
+  #     dotnet_version: 6.0.x
+  # docker_build_and_test:
+  #   strategy:
+  #     matrix:
+  #       application: [cicd-test]
+  #   uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
+  #   with:
+  #     file: ./DevOps/dockerfile
+  #     context: .
+  #     push:  ${{ github.event_name != 'pull_request' }}
+  #     application: ${{matrix.application}}
+  #     push_as_latest: true
+  # show:
+  #   name: "show image tags"
+  #   runs-on: ubuntu-latest
+  #   needs: [docker_build_and_test, dotnet_build_and_test]
+  #   steps:
+  #     - run: echo "${{ needs.docker_build_and_test.outputs.image_tags }}"
   deploy:
     runs-on: 'ubuntu-latest'
-    needs: [docker_build_and_test, dotnet_build_and_test]
+    # needs: [docker_build_and_test, dotnet_build_and_test]
     environment: ${{ github.event.inputs.environment }}
     steps:
     - name: Checkout code
@@ -59,7 +59,10 @@ jobs:
       uses: azure/setup-helm@v4.2.0
 
     - name: Deploy with Helm
-      run: helm upgrade --install my-release ./DevOps/Helm/test-service --namespace ${{ vars.KUBE_NAMESPACE }} --set image.image=${{ needs.docker_build_and_test.outputs.image_name }} --set image.pullSecrets=${{ secrets.GITHUB_TOKEN }} 
+      run: >  
+        helm upgrade --install my-release ./DevOps/Helm/test-service --namespace ${{ vars.KUBE_NAMESPACE }} 
+        --set image.image=ghcr.io/powerchainger/cicd-test:test-helm-dep-10490383565-84f2561-84-1
+        --set image.pullSecrets=${{ secrets.GITHUB_TOKEN }} 
 
     - name: Check release
       run: helm status --namespace ${{ vars.KUBE_NAMESPACE }} my-release 

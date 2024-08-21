@@ -59,11 +59,11 @@ jobs:
       uses: azure/setup-helm@v4.2.0
 
     - name: Deploy with Helm
-      run: |- 
-        helm upgrade --install my-release ./DevOps/Helm/test-service
-        --namespace ${{ vars.KUBE_NAMESPACE }} 
-        --set image.image=${{ needs.docker_build_and_test.outputs.image_name }}
-        --set image.pullSecrets=${{ secrets.GITHUB_TOKEN }}
+      run: |
+        helm upgrade --install my-release ./DevOps/Helm/test-service \
+        --namespace ${{ vars.KUBE_NAMESPACE }} \
+        --set image.image=${{ needs.docker_build_and_test.outputs.image_name }} \
+        --set image.pullSecrets=${{ secrets.GITHUB_TOKEN }} \
 
     - name: Check release
       run: helm status --namespace ${{ vars.KUBE_NAMESPACE }} my-release 

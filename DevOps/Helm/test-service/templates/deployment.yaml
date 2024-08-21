@@ -25,7 +25,6 @@ spec:
       annotations:
         # prometheus.io/scrape: "true"
         # prometheus.io/path: "/metrics"
-        # prometheus.io/port: {{ .Values.container.probePort | quote }}
     spec:
       {{- with .Values.image.pullSecrets }}
         imagePullSecrets:
@@ -39,28 +38,7 @@ spec:
             - name: app
               containerPort: 8080
               protocol: TCP
-          # readinessProbe:
-          #   httpGet:
-          #     path: /ready
-          #     port: {{ .Values.container.probePort}}    
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 10 
-          #   timeoutSeconds: 5
-          #   successThreshold: 1
-          #   failureThreshold: 3
-          # livenessProbe:
-          #   httpGet:
-          #     path: /live
-          #     port: {{ .Values.container.probePort}}    
-          #   initialDelaySeconds: 15
-          #   periodSeconds: 10
-          #   timeoutSeconds: 5
-          #   successThreshold: 1
-          #   failureThreshold: 3
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
-          env:
-            - name: RepoCommitId
-              value: {{ .Values.repoCommitId }}
 

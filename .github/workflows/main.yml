@@ -32,7 +32,7 @@ jobs:
       - name: Environments to be run against
         run: >
           echo '[
-          ${{ inputs.environment && "," + inputs.environment|| ""}}
+          ${{ inputs.environment && inputs.environment || " " }}
           ]'
           >> environments.json
       - name: Show 

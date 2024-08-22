@@ -58,6 +58,7 @@ jobs:
       - run: |
           echo "${{ needs.docker_build_and_test.outputs.image_tags }}"
           echo ${{ needs.init.outputs.should_deploy }}
+          echo ${{ fromJson(needs.init.outputs.environments) }}
   deploy:
     if: ${{ needs.init.outputs.should_deploy && needs.init.outputs.environments }}
     runs-on: 'ubuntu-latest'

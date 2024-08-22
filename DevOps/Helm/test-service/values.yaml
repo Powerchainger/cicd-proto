@@ -3,4 +3,4 @@ environmentType: null
 image:
   pullPolicy: IfNotPresent
   image: null
-  pullSecrets: null
+  pullSecrets: []

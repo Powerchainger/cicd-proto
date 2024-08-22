@@ -20,6 +20,25 @@ env:
   PUSH_AS_LATEST: true
   
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{steps.should_deploy.outputs.output}}
+      #environment: ${{}}
+    steps:
+      - name: Determine where it trigger deployment
+        id: should_deploy
+        run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
+      - name: Environments to be run against
+        run: >
+          echo '[
+          ${{ inputs.environment && "," + inputs.environment|| ""}}
+          ]'
+          >> environments.json
+      - name: Show 
+        run: cat environments.json
+
+          
   dotnet_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 
@@ -42,6 +61,7 @@ jobs:
     steps:
       - run: echo "${{ needs.docker_build_and_test.outputs.image_tags }}"
   deploy:
+    if: false
     runs-on: 'ubuntu-latest'
     needs: [docker_build_and_test, dotnet_build_and_test]
     environment: ${{ github.event.inputs.environment }}

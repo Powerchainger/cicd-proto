@@ -59,10 +59,20 @@ jobs:
       uses: azure/setup-helm@v4.2.0
 
     - name: Deploy with Helm
-      run: >  
-        helm upgrade --install my-release ./DevOps/Helm/test-service --namespace ${{ vars.KUBE_NAMESPACE }} 
-        --set image.image="ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
-        --set image.pullSecrets[0].name=regcred
+      run: Powerchainger/infrastructure-shared/actions/helm/local-chart-deploy/action.yml@main
+      with:
+        values: |
+          replicaCount: 1
+          environmentType: ${{ github.event.inputs.environment }}
+          image:
+            pullPolicy: IfNotPresent
+            image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
+            pullSecrets:
+              - name=regcred
+        namespace: ${{ vars.KUBE_NAMESPACE }} 
+        release: my-release
+        chart: ./DevOps/Helm/test-service
+
 
     - name: Check release
       run: helm status --namespace ${{ vars.KUBE_NAMESPACE }} my-release 

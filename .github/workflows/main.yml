@@ -59,7 +59,7 @@ jobs:
       uses: azure/setup-helm@v4.2.0
 
     - name: Deploy with Helm
-      uses: Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy/action.yml@main
+      uses: Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy@main
       with:
         values: |
           replicaCount: 1

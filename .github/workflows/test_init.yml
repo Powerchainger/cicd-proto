@@ -42,4 +42,6 @@ jobs:
       - name: show env
         run: echo ${{needs.init.outputs.environments }}
       - name: show env2
+        run: echo ${{ fromJson("[ test, test2]")   }}
+      - name: show env2
         run: echo ${{ fromJson(needs.init.outputs.environments)   }}

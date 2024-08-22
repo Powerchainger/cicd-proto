@@ -47,7 +47,7 @@ jobs:
     with:
       file: ./DevOps/dockerfile
       context: .
-      push:  ${{ fromJson((needs.init.outputs.should_deploy) }}
+      push:  ${{ fromJson(needs.init.outputs.should_deploy) }}
       application: ${{matrix.application}}
       push_as_latest: true
   show:

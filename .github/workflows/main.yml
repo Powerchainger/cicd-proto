@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Determine where it triggers deployment
         id: should_deploy
-        run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
+        run: echo "output=${{ inputs.environment && github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
         run: echo '[ "${{ inputs.environment && inputs.environment || null }}"]' > environments.json
       - name: Set  environment output
@@ -47,7 +47,7 @@ jobs:
     with:
       file: ./DevOps/dockerfile
       context: .
-      push:  ${{ needs.init.should_deploy }}
+      push:  ${{ needs.init.outputs.should_deploy }}
       application: ${{matrix.application}}
       push_as_latest: true
   show:
@@ -57,9 +57,9 @@ jobs:
     steps:
       - run: |
           echo "${{ needs.docker_build_and_test.outputs.image_tags }}"
-          echo ${{ needs.init.should_deploy }}
+          echo ${{ needs.init.outputs.should_deploy }}
   deploy:
-    if: ${{ needs.init.should_deploy && needs.init.environments }}
+    if: ${{ needs.init.outputs.should_deploy && needs.init.outputs.environments }}
     runs-on: 'ubuntu-latest'
     needs: [docker_build_and_test, dotnet_build_and_test]
     strategy:

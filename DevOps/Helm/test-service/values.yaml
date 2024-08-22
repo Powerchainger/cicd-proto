@@ -1,0 +1,6 @@
+replicaCount: 1
+environmentType: null
+image:
+  pullPolicy: IfNotPresent
+  image: null
+  pullSecrets: []

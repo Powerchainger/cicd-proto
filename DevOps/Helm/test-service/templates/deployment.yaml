@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "SampleApp.fullname" . }}
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    {{- include "SampleApp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ include "SampleApp.replicaCount" . }}
+  strategy:
+    type: "RollingUpdate"
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "SampleApp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "SampleApp.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      #annotations:
+        # prometheus.io/scrape: "true"
+        # prometheus.io/path: "/metrics"
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "SampleApp.image" .}}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: app
+              containerPort: 8080
+              protocol: TCP
+          # securityContext:
+          #   runAsNonRoot: true
+          #   allowPrivilegeEscalation: false
+

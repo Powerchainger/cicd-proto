@@ -37,9 +37,6 @@ jobs:
   test:
     needs: [init]
     runs-on: ubuntu-latest
-    strategy:
-      matrix: 
-        environment: ${{ fromJson(needs.init.outputs.environments) }}
     steps:
       - name: show env output
         run: echo ${{needs.init.outputs.should_deploy}}
@@ -47,8 +44,6 @@ jobs:
         run: echo ${{needs.init.outputs.environments }}
       - name: show test
         run: echo ${{ fromJson('["test", "test2"]')   }}
-      - name: show env2
-        run: echo ${{ matrix.environment }}
   dotnet_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 

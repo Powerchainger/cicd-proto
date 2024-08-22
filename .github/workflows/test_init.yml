@@ -33,9 +33,11 @@ jobs:
   test:
     needs: [init]
     runs-on: ubuntu-latest
-   
+    strategy:
+      matrix: 
+        environment: ${{ fromJson(needs.init.outputs.environments) }}
     steps:
       - name: show env output
         run: echo ${{needs.init.outputs.should_deploy}}
       - name: show env
-        run: echo ${{ needs.init.outputs.environments }}
+        run: echo ${{matrix.environment}}

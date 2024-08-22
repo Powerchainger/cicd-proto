@@ -1,0 +1,31 @@
+name: main
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment'
+        required: true
+        type: choice
+        options:
+          - another
+          - test1
+  
+env:
+  RELEASE_BRANCH: 'refs/heads/main'
+  PUSH_AS_LATEST: true
+  
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{steps.should_deploy.outputs.output}}
+      #environment: ${{}}
+    steps:
+      - name: Determine where it triggers deployment
+        id: should_deploy
+        run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
+      - name: Environments to be run against
+        run: echo '[ ${{ inputs.environment && inputs.environment || null }} ]' >> environments.json
+      - name: Show 
+        run: cat environments.json

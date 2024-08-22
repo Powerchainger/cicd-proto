@@ -30,11 +30,7 @@ jobs:
         id: should_deploy
         run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
-        run: >
-          echo '[
-          ${{ inputs.environment && inputs.environment || " " }}
-          ]'
-          >> environments.json
+        run: echo '[ ${{ inputs.environment && inputs.environment || " " }} ]' >> environments.json
       - name: Show 
         run: cat environments.json
 

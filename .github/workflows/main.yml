@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Determine where it triggers deployment
         id: should_deploy
-        run: echo "output=${{ inputs.environment && github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
+        run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
         run: echo '[ "${{ inputs.environment && inputs.environment || null }}"]' > environments.json
       - name: Set  environment output
@@ -39,9 +39,10 @@ jobs:
     with: 
       dotnet_version: 6.0.x
   docker_build_and_test:
+    needs: [init]
     strategy:
       matrix:
-        application: [cicd-test, init]
+        application: [cicd-test]
     uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
     with:
       file: ./DevOps/dockerfile

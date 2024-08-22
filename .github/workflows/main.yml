@@ -23,7 +23,7 @@ jobs:
   init:
     runs-on: ubuntu-latest
     outputs:
-      should_deploy: ${{ fromJson(steps.should_deploy.outputs.output) }}
+      should_deploy: ${{ steps.should_deploy.outputs.output }}
       environments: ${{steps.environments.outputs.output}}
     steps:
       - name: Determine where it triggers deployment
@@ -47,7 +47,7 @@ jobs:
     with:
       file: ./DevOps/dockerfile
       context: .
-      push:  ${{ needs.init.outputs.should_deploy }}
+      push:  ${{ fromJson((needs.init.outputs.should_deploy) }}
       application: ${{matrix.application}}
       push_as_latest: true
   show:

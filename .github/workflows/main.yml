@@ -36,8 +36,8 @@ jobs:
             inputs.environment 
               && format('"{0}"', inputs.environment) 
               || (github.event_name == 'push' 
-                && '"prod"' 
-                || null )
+                && '"none"'
+                || '"none"' )
           }}
           ]' 
           > environments.json
@@ -84,19 +84,35 @@ jobs:
           echo "environments: ${{ needs.init.outputs.environments }}"
   deploy:
     needs: [init, docker_build_and_test, dotnet_build_and_test]
-    if: ${{ fromJson(needs.init.outputs.should_deploy) && fromJson(needs.init.outputs.environments) }}
-    uses: Powerchainger/infrastructure-shared/.github/workflows/helm_deploy.yml@main
-    with:
-      environments: ${{ needs.init.outputs.environments }}
-      values: |
-        replicaCount: 1
-        image:
-          pullPolicy: IfNotPresent
-          image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
-          pullSecrets:
-          - name: regcred
-      namespace: ${{ vars.KUBE_NAMESPACE }} 
-      release: my-release
-      chart: ./DevOps/Helm/test-service
-    secrets:
-     KUBE_CONFIG: $${{ secrets.KUBE_CONFIG }}
+    runs-on: ubuntu-latest
+    if: ${{ fromJson(needs.init.outputs.should_deploy) && fromJson(needs.init.outputs.environments) && !contains(needs.init.outputs.environments, 'none') }}
+    strategy:
+      matrix: 
+        environment: ${{ fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]') }}
+    environment: ${{ matrix.environment }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Kubernetes context
+      uses: azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Install Helm
+      uses: azure/setup-helm@v4.2.0
+
+    - name: Deploy with Helm
+      uses:  Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy@main
+      with:
+        values: |
+          replicaCount: 1
+          image:
+            pullPolicy: IfNotPresent
+            image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
+            pullSecrets:
+            - name: regcred
+        namespace: ${{ vars.KUBE_NAMESPACE }} 
+        release: my-release
+        chart: ./DevOps/Helm/test-service

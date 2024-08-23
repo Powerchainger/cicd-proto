@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SimpleApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
@@ -20,6 +20,18 @@ public class WeatherForecastController : ControllerBase
 
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
+    {
+        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        {
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+        })
+        .ToArray();
+    }
+
+     [HttpGet(Name = "GetTest")]
+    public IEnumerable<WeatherForecast> GetTest()
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {

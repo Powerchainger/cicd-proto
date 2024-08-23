@@ -75,7 +75,7 @@ jobs:
     needs: [init, docker_build_and_test, dotnet_build_and_test]
     strategy:
       matrix: 
-        environment: ${{ fromJson(needs.init.outputs.environments) || ["default"]}}
+        environment: ${{ fromJson(needs.init.outputs.environments) || ['default']}}
     environment: ${{ matrix.environment }}
     steps:
     - name: Checkout code

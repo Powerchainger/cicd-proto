@@ -24,16 +24,27 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_deploy: ${{ steps.should_deploy.outputs.output }}
-      environments: ${{steps.environments.outputs.output}}
+      environments: ${{ steps.environments.outputs.output }}
     steps:
       - name: Determine where it triggers deployment
         id: should_deploy
-        run: echo "output=${{github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
+        run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
-        run: echo '[ "${{ inputs.environment && inputs.environment || null }}"]' > environments.json
+        run: echo '[${{ inputs.environment && format('{0}', inputs.environment) || null }}]' > environments.json
       - name: Set  environment output
         id: environments
         run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT
+  test:
+    needs: [init]
+    runs-on: ubuntu-latest
+    steps:
+      - name: show env output
+        run: echo ${{ needs.init.outputs.should_deploy }}
+      - name: show env
+        run: echo ${{ needs.init.outputs.environments }}
+      - name: show test
+        run: echo ${{ fromJson(needs.init.outputs.environments) }}
+      - run: echo ${{ toJSON(fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]')) }}
   dotnet_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 
@@ -48,48 +59,32 @@ jobs:
       file: ./DevOps/dockerfile
       context: .
       push:  ${{ fromJson(needs.init.outputs.should_deploy) }}
-      application: ${{matrix.application}}
+      application: ${{ matrix.application }}
       push_as_latest: true
   show:
     name: "show"
     runs-on: ubuntu-latest
-    needs: [docker_build_and_test, dotnet_build_and_test]
+    needs: [init, docker_build_and_test, dotnet_build_and_test]
     steps:
       - run: |
-          echo "${{ needs.docker_build_and_test.outputs.image_tags }}"
-          echo ${{ needs.init.outputs.should_deploy }}
+          echo "tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
+          echo "should deploy: ${{ needs.init.outputs.should_deploy }}"
+          echo "environments: {{ needs.init.outputs.environments }}"
   deploy:
-    if: ${{ needs.init.outputs.should_deploy && needs.init.outputs.environments }}
-    runs-on: 'ubuntu-latest'
-    needs: [docker_build_and_test, dotnet_build_and_test]
-    strategy:
-      matrix: 
-        environment: ${{ fromJson(needs.init.outputs.environments) }}
-    environment: ${{ matrix.environment }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Kubernetes context
-      uses: azure/k8s-set-context@v1
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
-    - name: Install Helm
-      uses: azure/setup-helm@v4.2.0
-
-    - name: Deploy with Helm
-      uses: Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy@main
-      with:
-        values: |
-          replicaCount: 1
-          environmentType: ${{ matrix.environment }}
-          image:
-            pullPolicy: IfNotPresent
-            image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
-            pullSecrets:
-            - name: regcred
-        namespace: ${{ vars.KUBE_NAMESPACE }} 
-        release: my-release
-        chart: ./DevOps/Helm/test-service
+    needs: [init, docker_build_and_test, dotnet_build_and_test]
+    if: ${{ fromJson(needs.init.outputs.should_deploy) }}
+    uses: Powerchainger/infrastructure-shared/.github/workflows/helm_deploy.yml@main
+    with:
+      environments: needs.init.outputs.environments
+      values: |
+        replicaCount: 1
+        image:
+          pullPolicy: IfNotPresent
+          image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
+          pullSecrets:
+          - name: regcred
+      namespace: ${{ vars.KUBE_NAMESPACE }} 
+      release: my-release
+      chart: ./DevOps/Helm/test-service
+    secrets:
+     KUBE_CONFIG: $${{ secrets.KUBE_CONFIG }}

@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Determine where it triggers deployment
         id: should_deploy
-        run: echo "output=${ {github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
+        run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
         run: echo '[ ${{ inputs.environment && format('{0}', inputs.environment) || null }} ]' > environments.json
       - name: Set  environment output
@@ -44,6 +44,7 @@ jobs:
         run: echo ${{ needs.init.outputs.environments }}
       - name: show test
         run: echo ${{ fromJson(needs.init.outputs.environments) }}
+      - run: echo ${{ fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]')}}
   dotnet_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 
@@ -69,7 +70,6 @@ jobs:
           echo "tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
           echo "should deploy: ${{ needs.init.outputs.should_deploy }}"
           echo "environments: {{ needs.init.outputs.environments }}"
-      - run: echo ${{ fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]')}}
   deploy:
     if: ${{ needs.init.outputs.should_deploy && fromJson(needs.init.outputs.environments) }}
     runs-on: 'ubuntu-latest'

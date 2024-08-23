@@ -71,37 +71,20 @@ jobs:
           echo "should deploy: ${{ needs.init.outputs.should_deploy }}"
           echo "environments: {{ needs.init.outputs.environments }}"
   deploy:
-    if: ${{ needs.init.outputs.should_deploy && fromJson(needs.init.outputs.environments) }}
-    runs-on: 'ubuntu-latest'
     needs: [init, docker_build_and_test, dotnet_build_and_test]
-    strategy:
-      matrix: 
-        environment: ${{ fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]') }}
-    environment: ${{ matrix.environment }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Kubernetes context
-      uses: azure/k8s-set-context@v1
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
-    - name: Install Helm
-      uses: azure/setup-helm@v4.2.0
-
-    - name: Deploy with Helm
-      uses: Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy@main
-      with:
-        values: |
-          replicaCount: 1
-          environmentType: ${{ matrix.environment }}
-          image:
-            pullPolicy: IfNotPresent
-            image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
-            pullSecrets:
-            - name: regcred
-        namespace: ${{ vars.KUBE_NAMESPACE }} 
-        release: my-release
-        chart: ./DevOps/Helm/test-service
+    if: ${{ needs.init.outputs.should_deploy && fromJson(needs.init.outputs.environments) }}
+    uses: Powerchainger/infrastructure-shared/.github/workflows/helm_deploy.yml@main
+    with:
+      environments: needs.init.outputs.environments
+      values: |
+        replicaCount: 1
+        image:
+          pullPolicy: IfNotPresent
+          image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
+          pullSecrets:
+          - name: regcred
+      namespace: ${{ vars.KUBE_NAMESPACE }} 
+      release: my-release
+      chart: ./DevOps/Helm/test-service
+    secrets:
+     KUBE_CONFIG: $${{ secrets.KUBE_CONFIG }}

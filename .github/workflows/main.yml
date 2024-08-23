@@ -72,7 +72,7 @@ jobs:
           echo "environments: {{ needs.init.outputs.environments }}"
   deploy:
     needs: [init, docker_build_and_test, dotnet_build_and_test]
-    if: false
+    if: ${{ fromJson(needs.init.outputs.should_deploy) }}
     uses: Powerchainger/infrastructure-shared/.github/workflows/helm_deploy.yml@main
     with:
       environments: needs.init.outputs.environments

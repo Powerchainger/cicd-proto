@@ -35,7 +35,9 @@ jobs:
           ${{
             inputs.environment 
               && format('"{0}"', inputs.environment) 
-              || (github.event_name == 'push' && '"prod"' || null )
+              || (github.event_name == 'push' 
+                && '"prod"' 
+                || null )
           }}
           ]' 
           > environments.json

@@ -39,6 +39,7 @@ jobs:
             }}
           ]' 
           > environments.json
+      - run: cat environments.json
       - name: Set  environment output
         id: environments
         run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT

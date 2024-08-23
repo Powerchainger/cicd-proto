@@ -30,7 +30,15 @@ jobs:
         id: should_deploy
         run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
-        run: echo '[${{ inputs.environment && format('{0}', inputs.environment) || null }}]' > environments.json
+        run: > 
+          echo '[
+            ${{ 
+              inputs.environment 
+                && format('{0}', inputs.environment) 
+                || (github.event_name == 'push' && 'prod' || null )
+            }}
+          ]' 
+          > environments.json
       - name: Set  environment output
         id: environments
         run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT
@@ -69,13 +77,13 @@ jobs:
       - run: |
           echo "tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
           echo "should deploy: ${{ needs.init.outputs.should_deploy }}"
-          echo "environments: {{ needs.init.outputs.environments }}"
+          echo "environments: ${{ needs.init.outputs.environments }}"
   deploy:
     needs: [init, docker_build_and_test, dotnet_build_and_test]
-    if: ${{ fromJson(needs.init.outputs.should_deploy) }}
+    if: ${{ fromJson(needs.init.outputs.should_deploy) && fromJson(needs.init.outputs.environments) }}
     uses: Powerchainger/infrastructure-shared/.github/workflows/helm_deploy.yml@main
     with:
-      environments: needs.init.outputs.environments
+      environments: ${{ needs.init.outputs.environments }}
       values: |
         replicaCount: 1
         image:

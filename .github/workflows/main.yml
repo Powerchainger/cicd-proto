@@ -31,13 +31,11 @@ jobs:
         run: echo "output=${{ github.event_name != 'pull_request' }}" >> $GITHUB_OUTPUT
       - name: Environments to be run against
         run: > 
-          echo '[
-            ${{ 
-              inputs.environment 
-                && format('{0}', inputs.environment) 
-                || (github.event_name == 'push' && 'prod' || null )
-            }}
-          ]' 
+          echo '[${{ 
+            inputs.environment 
+              && format('{0}', inputs.environment) 
+              || (github.event_name == 'push' && 'prod' || null )
+            }}]' 
           > environments.json
       - run: cat environments.json
       - name: Set  environment output

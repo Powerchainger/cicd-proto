@@ -44,7 +44,7 @@ jobs:
         run: echo ${{ needs.init.outputs.environments }}
       - name: show test
         run: echo ${{ fromJson(needs.init.outputs.environments) }}
-      - run: echo ${{ toJSON( needs.init.outputs.environments != '[]' && fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]') ) }}
+      - run: echo ${{ toJSON(fromJson(needs.init.outputs.environments) || fromJson('[\"default\"]')) }}
   dotnet_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 

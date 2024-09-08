@@ -6,6 +6,7 @@ on:
       - 'main'  # Replace with your target branch
     paths-ignore:
       - '.github/**'
+  workflow_dispatch:
   
 jobs:
   dotnet_build_and_test:
@@ -32,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        environment: [test1]
+        environment: ${{fromJson("vars.QA_ENVS")}}
     environment: ${{ matrix.environment }}
     steps:
     - name: Checkout code

@@ -1,0 +1,62 @@
+name: main
+
+on:
+  push:
+    branches:
+      - 'main'  # Replace with your target branch
+    paths-ignore:
+      - '.github/**'
+  
+jobs:
+  dotnet_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
+    with: 
+      dotnet_version: 6.0.x
+  docker_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
+    with:
+      file: ./DevOps/dockerfile
+      context: .
+      push:  true
+      application: cicd-test
+      push_as_latest: true
+  show:
+    name: "show"
+    runs-on: ubuntu-latest
+    needs: [docker_build_and_test, dotnet_build_and_test]
+    steps:
+      - run: |
+          echo "tags: ${{ needs.docker_build_and_test.outputs.image_tags }}"
+  deploy:
+    needs: [docker_build_and_test, dotnet_build_and_test]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        environment: [test1]
+    environment: ${{ matrix.environment }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Kubernetes context
+      uses: azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Install Helm
+      uses: azure/setup-helm@v4.2.0
+
+    - name: Deploy with Helm
+      uses:  Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy@main
+      with:
+        values: |
+          replicaCount: 1
+          image:
+            pullPolicy: IfNotPresent
+            image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
+            pullSecrets:
+            - name: regcred
+        namespace: ${{ vars.KUBE_NAMESPACE }} 
+        release: my-release
+        chart: ./DevOps/Helm/test-service

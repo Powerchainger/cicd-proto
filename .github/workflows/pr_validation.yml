@@ -1,0 +1,20 @@
+on:
+  pull_request:
+    branches: [ "main" ]
+    
+env:
+  RELEASE_BRANCH: 'refs/heads/main'
+  PUSH_AS_LATEST: true
+  
+jobs:
+  dotnet_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
+    with: 
+      dotnet_version: 6.0.x
+  docker_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
+    with:
+      file: ./DevOps/dockerfile
+      context: .
+      push: false
+      application: cicd-test

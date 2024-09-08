@@ -13,6 +13,7 @@ var app = builder.Build();
 if (true)
 {
     app.UseSwagger();
+    
     app.UseSwaggerUI();
 }
 

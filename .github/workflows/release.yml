@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        environment: ${{fromJson("vars.QA_ENVS")}}
+        environment: ${{fromJson(vars.QA_ENVS)}}
     environment: ${{ matrix.environment }}
     steps:
     - name: Checkout code

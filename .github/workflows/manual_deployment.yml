@@ -1,0 +1,55 @@
+name: Manual Deployment
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment'
+        required: false
+        type: choice
+        options:
+          - another
+          - test1
+
+jobs:
+  dotnet_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
+    with: 
+      dotnet_version: 6.0.x
+      run_tests: false
+  docker_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
+    with:
+      file: ./DevOps/dockerfile
+      context: .
+      push: false
+      application: cicd-test
+  deploy:
+    needs: [docker_build_and_test, dotnet_build_and_test]
+    runs-on: ubuntu-latest
+    environment: ${{ input.environment }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Kubernetes context
+      uses: azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Install Helm
+      uses: azure/setup-helm@v4.2.0
+
+    - name: Deploy with Helm
+      uses:  Powerchainger/infrastructure-shared/.github/actions/helm/local-chart-deploy@main
+      with:
+        values: |
+          replicaCount: 1
+          image:
+            pullPolicy: IfNotPresent
+            image: "ghcr.io/powerchainger/cicd-test:${{ needs.docker_build_and_test.outputs.image_version }}"
+            pullSecrets:
+            - name: regcred
+        namespace: ${{ vars.KUBE_NAMESPACE }} 
+        release: my-release
+        chart: ./DevOps/Helm/test-service

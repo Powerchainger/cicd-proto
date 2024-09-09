@@ -21,6 +21,7 @@ jobs:
   deploy:
     needs: [docker_build_and_test]
     runs-on: ubuntu-latest
+    if: false
     environment: ${{ inputs.environment }}
     steps:
     - name: Checkout code

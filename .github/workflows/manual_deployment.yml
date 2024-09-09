@@ -11,20 +11,15 @@ on:
           - test1
 
 jobs:
-  dotnet_build_and_test:
-    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
-    with: 
-      dotnet_version: 6.0.x
-      run_tests: false
   docker_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
     with:
       file: ./DevOps/dockerfile
       context: .
-      push: false
+      push: true
       application: cicd-test
   deploy:
-    needs: [docker_build_and_test, dotnet_build_and_test]
+    needs: [docker_build_and_test]
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:

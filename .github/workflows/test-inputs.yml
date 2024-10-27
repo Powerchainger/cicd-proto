@@ -6,8 +6,7 @@ on:
         description: 'Select the environment'
         required: false
         type: choice
-        options:
-        - "test"
+        options: echo ${{ fromJson(vars.envs) }}
 
 jobs:
   test:

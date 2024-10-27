@@ -7,7 +7,7 @@ on:
         required: false
         type: choice
         options: 
-          ${{ fromJson(vars.envs) }}
+          ${{ fromJson('["asd", "asdfsad"]') }}
 
 jobs:
   test:
@@ -16,4 +16,4 @@ jobs:
     - name: test
       run: |
         echo $ {{inputs.environment}}
-        echo ${{ fromJson(vars.envs) }}
+        echo  ${{ fromJson('["asd", "asdfsad"]') }}

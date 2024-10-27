@@ -1,0 +1,17 @@
+name: test dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment'
+        required: false
+        type: choice
+        options:
+          ${{ fromJson(vars.envs) }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: test
+      run: echo $ {{inputs.environment}}

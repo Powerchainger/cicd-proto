@@ -2,8 +2,8 @@ on:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - 'DevOps/'
+    paths:
+      - '!DevOps/**'
 
 jobs:
   test_dotnet_build_and_test:

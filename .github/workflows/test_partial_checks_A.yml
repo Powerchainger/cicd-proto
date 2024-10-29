@@ -11,6 +11,7 @@ jobs:
     uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
     with: 
       dotnet_version: 6.0.x
+      skip: true
   test_docker_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
     with:

@@ -1,0 +1,22 @@
+name: Test partial A
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'DevOps/**'
+
+jobs:
+  dotnet_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/dotnet_build.yml@main
+    with: 
+      dotnet_version: 6.0.x
+  docker_build_and_test:
+    uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
+    with:
+      file: ./DevOps/dockerfile
+      context: .
+      push:  false
+      application: cicd-test
+      push_as_latest: false

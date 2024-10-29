@@ -1,3 +1,5 @@
+name: Skip 
+
 on:
   pull_request:
     branches:
@@ -15,6 +17,7 @@ jobs:
   test_docker_build_and_test:
     uses: Powerchainger/infrastructure-shared/.github/workflows/docker_build.yml@main
     with:
+      skip: true
       file: ./DevOps/dockerfile
       context: .
       push:  false

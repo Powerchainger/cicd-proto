@@ -1,4 +1,4 @@
-name: Skip 
+name: Skip 1 
 
 on:
   pull_request:

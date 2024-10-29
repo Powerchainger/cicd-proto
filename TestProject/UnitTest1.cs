@@ -23,6 +23,6 @@ public class Tests
     [Test]
     public void Test3()
     {
-        Assert.Pass();
+        Assert.Fail();
     }
 }

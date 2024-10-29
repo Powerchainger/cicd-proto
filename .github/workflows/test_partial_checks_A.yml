@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - 'DevOps/**'
+      - 'DevOps/'
 
 jobs:
   test_dotnet_build_and_test:

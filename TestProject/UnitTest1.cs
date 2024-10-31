@@ -13,9 +13,16 @@ public class Tests
         Assert.Pass();
     }
 
+    
     [Test]
     public void Test2()
     {
         Assert.Pass();
+    }
+
+    [Test]
+    public void Test4()
+    {
+        Assert.Fail();
     }
 }

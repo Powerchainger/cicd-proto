@@ -12,6 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: ${{ inputs.flag && ["test", "test2"] || ["o", "o2"] }} 
+        env: [${{ inputs.flag && '"test", "test2"' || '"o", "o2"' }}] 
     steps:
       - run: echo "${{matrix.env}}"

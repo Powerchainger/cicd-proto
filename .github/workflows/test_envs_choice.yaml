@@ -30,7 +30,7 @@ jobs:
       - name: Set environment empty 
         id: empty
         run: |
-          ARRAY_LENGTH=$(cat .\environments.json | jq length)
+          ARRAY_LENGTH=$(cat environments.json | jq length)
           if [ "$ARRAY_LENGTH" -eq 0 ]; then
             echo "output=true" >> $GITHUB_OUTPUT
           else

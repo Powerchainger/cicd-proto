@@ -31,7 +31,11 @@ jobs:
         id: empty
         run: |
           ARRAY_LENGTH=$(cat .\environments.json | jq length)
-          echo "output=$($ARRAY_LENGTH -eq 0)" >> $GITHUB_OUTPUT
+          if [ "$ARRAY_LENGTH" -eq 0 ]; then
+            echo "output=true" >> $GITHUB_OUTPUT
+          else
+            echo "output=false" >> $GITHUB_OUTPUT
+          fi
   test:
     needs: [init]
     runs-on: ubuntu-latest

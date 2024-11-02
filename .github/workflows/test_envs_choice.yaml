@@ -24,6 +24,7 @@ jobs:
         id: environments
         run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT
   test:
+    needs: [init]
     runs-on: ubuntu-latest
     strategy:
       matrix:

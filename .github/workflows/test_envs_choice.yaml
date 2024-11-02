@@ -14,4 +14,4 @@ jobs:
       matrix:
         env: ["test", "test2"]
     steps:
-      - run: echo "${{}matrix.env}"
+      - run: echo "${{matrix.env}}"

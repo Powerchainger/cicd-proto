@@ -16,9 +16,9 @@ jobs:
       - name: Environments to be run against
         run: |
           if "${{ toJson(inputs.flag) }}" ; then
-            echo '["o", "o2"]' > environments.json
+            echo '${{ vars.eevs }}' > environments.json
           else
-            echo '${{vars.QA_ENVS}' > environments.json
+            echo '${{ vars.QA_ENVS }}' > environments.json
           fi
       - name: Set  environment output
         id: environments

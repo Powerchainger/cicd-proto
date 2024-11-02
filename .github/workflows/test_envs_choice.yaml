@@ -36,6 +36,7 @@ jobs:
           else
             echo "output=false" >> $GITHUB_OUTPUT
           fi
+      - run: echo $GITHUB_OUTPUT
   test:
     needs: [init]
     runs-on: ubuntu-latest

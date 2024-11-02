@@ -21,6 +21,7 @@ jobs:
           else
             echo '${{ vars.QA_ENVS }}' > environments.json
           fi
+      - run: cat environments.json
       - name: Install jq
         run: sudo apt-get install -y jq
       - name: Set  environment output
@@ -29,7 +30,7 @@ jobs:
       - name: Set environment empty 
         id: empty
         run: |
-          ARRAY_LENGTH=$(jq 'length' environments.json)
+          ARRAY_LENGTH=$(jq length environments.json)
           echo "output=$($ARRAY_LENGTH -eq 0)" >> $GITHUB_OUTPUT
   test:
     needs: [init]

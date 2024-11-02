@@ -11,31 +11,28 @@ jobs:
   init:
     runs-on: ubuntu-latest
     outputs:
-      environments: ${{steps.environments.outputs.output}}
-      empty: ${{steps.empty.outputs.output}}
+      environments: ${{steps.environments.outputs.envs}}
+      empty: ${{steps.environments.outputs.is_empty}}
     steps:
       - name: Environments to be run against
+        id: environments
         run: |
           if "${{ toJson(inputs.flag) }}" ; then
             echo '${{ vars.eevs }}' > environments.json
           else
             echo '${{ vars.QA_ENVS }}' > environments.json
           fi
-      - run: cat environments.json
-      - name: Set environment empty 
-        id: empty
-        run: |
+          
+          echo "envs=$(cat environments.json)" >> $GITHUB_OUTPUT
+          
           ARRAY_LENGTH=$(cat environments.json | jq length)
           if [ "$ARRAY_LENGTH" -eq 0 ]; then
-            echo "output=true" >> $GITHUB_OUTPUT
+            echo "is_empty=true" >> $GITHUB_OUTPUT
           else
-            echo "output=false" >> $GITHUB_OUTPUT
+            echo "is_empty=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: Set  environment output
-        id: environments
-        run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT
-      - run: echo ${{steps.empty.outputs.output}}
+      - run: cat environments.json
+      - run: echo ${{steps.environments.outputs.is_empty}}
   test:
     needs: [init]
     if: needs.init.outputs.empty != 'true'

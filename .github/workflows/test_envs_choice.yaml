@@ -12,17 +12,23 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environments: ${{steps.environments.outputs.output}}
+      empty: ${{steps.empty.outputs.output}}
     steps:
       - name: Environments to be run against
         run: |
           if "${{ toJson(inputs.flag) }}" ; then
-            echo '[${{ vars.eevs }}]' > environments.json
+            echo '${{ vars.eevs }}' > environments.json
           else
-            echo '[${{ vars.QA_ENVS }}]' > environments.json
+            echo '${{ vars.QA_ENVS }}' > environments.json
           fi
       - name: Set  environment output
         id: environments
         run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT
+      - name: Set environment empty 
+        id: empty
+        run: |
+          ARRAY_LENGTH=$(jq 'length' environments.json)
+          echo "output=$($ARRAY_LENGTH -eq 0)" >> $GITHUB_OUTPUT
   test:
     needs: [init]
     runs-on: ubuntu-latest
@@ -31,3 +37,4 @@ jobs:
         env: ${{ fromJson(needs.init.outputs.environments) }}
     steps:
       - run: echo "${{matrix.env}}"
+      - run: echo "${{needs.init.outputs.empty}}"

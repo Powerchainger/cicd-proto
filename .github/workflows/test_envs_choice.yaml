@@ -36,9 +36,10 @@ jobs:
           else
             echo "output=false" >> $GITHUB_OUTPUT
           fi
-      - run: cat $GITHUB_OUTPUT
+      - run: echo ${{steps.empty.outputs.output}}
   test:
     needs: [init]
+    if: needs.init.empty != "true"
     runs-on: ubuntu-latest
     strategy:
       matrix:

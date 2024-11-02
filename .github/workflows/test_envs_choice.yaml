@@ -8,10 +8,25 @@ on:
         type: boolean
 
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    outputs:
+      environments: ${{steps.environments.outputs.output}}
+    steps:
+      - name: Environments to be run against
+        run: |
+          if "${{ toJson(inputs.flag) }}" ; then
+            echo '["o", "o2"]' > environments.json
+          else
+            echo '["test", "test2"]' > environments.json
+          fi
+      - name: Set  environment output
+        id: environments
+        run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [${{ inputs.flag && '"test", "test2"' || '"o", "o2"' }}] 
+        env: ${{ fromJson(needs.init.outputs.environments) }}
     steps:
       - run: echo "${{matrix.env}}"

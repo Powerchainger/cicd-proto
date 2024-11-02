@@ -18,7 +18,7 @@ jobs:
           if "${{ toJson(inputs.flag) }}" ; then
             echo '["o", "o2"]' > environments.json
           else
-            echo '["test", "test2"]' > environments.json
+            echo '${{vars.QA_ENVS}' > environments.json
           fi
       - name: Set  environment output
         id: environments

@@ -31,11 +31,7 @@ jobs:
           else
             echo "output=false" >> $GITHUB_OUTPUT
           fi
-      - name: protect against empty
-        run: |
-          if ${{steps.empty.outputs.output}}; then
-            echo "['none']" > environments.json
-          fi
+
       - name: Set  environment output
         id: environments
         run: echo "output=$(cat environments.json)" >> $GITHUB_OUTPUT

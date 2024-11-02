@@ -1,0 +1,17 @@
+name: choice environments from var
+
+on:
+  workflow_dispatch:
+    inputs:
+      flag:
+        required: true
+        type: boolean
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ["test", "test2"]
+    steps:
+      - run: echo "${{}matrix.env}"

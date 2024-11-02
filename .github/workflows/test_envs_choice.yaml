@@ -39,7 +39,7 @@ jobs:
       - run: echo ${{steps.empty.outputs.output}}
   test:
     needs: [init]
-    if: needs.init.empty != "true"
+    if: needs.init.empty != 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:

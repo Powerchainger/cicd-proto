@@ -30,7 +30,7 @@ jobs:
       - name: Set environment empty 
         id: empty
         run: |
-          ARRAY_LENGTH=$(jq length environments.json)
+          ARRAY_LENGTH=$(cat .\test.json | jq length)
           echo "output=$($ARRAY_LENGTH -eq 0)" >> $GITHUB_OUTPUT
   test:
     needs: [init]

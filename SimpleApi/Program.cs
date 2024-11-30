@@ -15,6 +15,7 @@ if (true)
     app.UseSwagger();
     
     app.UseSwaggerUI();
+    
 }
 
 // app.UseHttpsRedirection();
